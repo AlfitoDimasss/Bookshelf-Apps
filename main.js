@@ -86,7 +86,7 @@ const setMessageToast = state => {
 // End Utility Function
 
 // Storage Function
-function isStorageExist() /* boolean */ {
+const isStorageExist = () => {
   if (typeof (Storage) === undefined) {
     alert('Browser kamu tidak mendukung local storage');
     return false;
@@ -94,14 +94,14 @@ function isStorageExist() /* boolean */ {
   return true;
 }
 
-function saveData() {
+const saveData = () => {
   if (isStorageExist()) {
     const parsed = JSON.stringify(BOOKS);
     localStorage.setItem(STORAGE_KEY, parsed);
   }
 }
 
-function loadDataFromStorage() {
+const loadDataFromStorage = () => {
   const serializedData = localStorage.getItem(STORAGE_KEY);
   let data = JSON.parse(serializedData);
 
@@ -137,7 +137,7 @@ const getBook = title => {
   document.dispatchEvent(new Event(RENDER_SEARCH_UI));
 }
 
-const makeBook = (book) => {
+const makeBook = book => {
   const { id, title, author, year, isComplete } = book;
 
   const bookTitle = document.createElement('h3');
@@ -191,7 +191,7 @@ const makeBook = (book) => {
   return bookArticle;
 };
 
-const makeSearchedBook = (book) => {
+const makeSearchedBook = book => {
   const { id, title, author, year } = book;
 
   const bookTitle = document.createElement('h3');
@@ -217,9 +217,9 @@ const addBookToCompleteShelf = id => {
     return;
   }
   book.isComplete = true;
+  document.dispatchEvent(new Event(RENDER_UI));
   setMessageToast('move');
   document.dispatchEvent(new Event(TOAST_MSG));
-  document.dispatchEvent(new Event(RENDER_UI));
   saveData();
 }
 
@@ -230,9 +230,9 @@ const addBookToIncompleteShelf = id => {
     return;
   }
   book.isComplete = false;
+  document.dispatchEvent(new Event(RENDER_UI));
   setMessageToast('move');
   document.dispatchEvent(new Event(TOAST_MSG));
-  document.dispatchEvent(new Event(RENDER_UI));
   saveData();
 }
 
@@ -243,18 +243,15 @@ const deleteBook = id => {
     return;
   }
   BOOKS.splice(bookId, 1);
+  document.dispatchEvent(new Event(RENDER_UI));
   setMessageToast('delete');
   document.dispatchEvent(new Event(TOAST_MSG));
-  document.dispatchEvent(new Event(RENDER_UI));
   saveData();
 }
 // End Main Function
 
 // Custom-Event Listener
-document.addEventListener(RENDER_UI, () => {
-  console.log(`Isi BOOKS sekarang:`);
-  console.log(BOOKS);
-
+document.addEventListener(RENDER_UI, function () {
   const incompleteBookshelfList = document.getElementById('incompleteBookshelfList');
   const completeBookshelfList = document.getElementById('completeBookshelfList');
 
@@ -280,7 +277,7 @@ document.addEventListener(RENDER_SEARCH_UI, function () {
   }
 });
 
-document.addEventListener(TOAST_MSG, () => {
+document.addEventListener(TOAST_MSG, function () {
   const snackbar = document.getElementById('snackbar');
   snackbar.classList.toggle('show');
   setTimeout(function () {
@@ -300,8 +297,6 @@ const showModal = id => {
   const bookYear = document.getElementById('editBookYear');
   const book = findBook(id);
   const filteredBooks = BOOKS.filter(item => item.title !== book.title);
-  console.log('Filtered:');
-  console.log(filteredBooks);
 
   bookTitle.value = book.title;
   bookAuthor.value = book.author;
