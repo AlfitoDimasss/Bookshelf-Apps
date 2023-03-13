@@ -21,7 +21,9 @@ document.addEventListener('DOMContentLoaded', function () {
   searchBookForm.addEventListener('submit', function (e) {
     e.preventDefault();
     const title = document.getElementById('searchBookTitle').value;
-    getBook(title);
+    if (title !== '') {
+      getBook(title);
+    }
   })
 });
 // End Initial Function
